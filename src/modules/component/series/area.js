@@ -21,6 +21,7 @@ define(function (require) {
       strokeWidth: 0,
       opacity: 1
     };
+    var g;
 
     function component(selection) {
       selection.each(function () {
@@ -31,9 +32,11 @@ define(function (require) {
 
         var areaPath = path().pathGenerator(areas);
 
-        d3.select(this)
-          .append("g")
-          .call(builder(properties, areaPath));
+        if (!g) {
+          g = d3.select(this).append("g");
+        }
+
+        g.call(builder(properties, areaPath));
       });
     }
 

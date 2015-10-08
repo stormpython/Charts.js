@@ -2,11 +2,12 @@ define(function (require) {
   var d3 = require("d3");
 
   return function ellipse() {
-    var accessor = function (d) { return d; };
+    var key = null;
     var cx = function (d) { return d.x; };
     var cy = function (d) { return d.y; };
     var rx = 20;
     var ry = 20;
+    var color = d3.scale.category10();
 
     // Options
     var cssClass = "ellipses";
@@ -16,12 +17,9 @@ define(function (require) {
     var opacity = null;
 
     function element(selection) {
-      selection.each(function (data, index) {
-        data = accessor.call(this, data, index);
-
-        var ellipses = d3.select(this)
-          .selectAll("." + cssClass)
-          .data(data);
+      selection.each(function (data) {
+        var ellipses = d3.select(this).selectAll("ellipse")
+          .data(data, key);
 
         // Exit
         ellipses.exit().remove();
@@ -44,13 +42,13 @@ define(function (require) {
     }
 
     function colorFill(d, i) {
-      return d3.scale.category10()(i);
+      return color(i);
     }
 
     // Public API
-    element.accessor = function (_) {
-      if (!arguments.length) { return accessor; }
-      accessor = _;
+    element.key = function (_) {
+      if (!arguments.length) { return key; }
+      key = _;
       return element;
     };
 
